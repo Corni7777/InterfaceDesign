@@ -1,5 +1,7 @@
 body {
     text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #1F1F1F;
 }
 #playground {
     border-radius: 30px;

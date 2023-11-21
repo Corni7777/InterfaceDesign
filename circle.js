@@ -18,9 +18,6 @@ Interface.circle = class {
     display() {
         var canvas = document.getElementById("playground");
         var ctx = canvas.getContext("2d");
-    
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
         // Berechne die Easing-Position basierend auf der aktuellen Position der Ellipse
         let dx = this.targetX - this.x;
         this.x += dx * this.easing;
