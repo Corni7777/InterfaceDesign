@@ -9,10 +9,10 @@ Interface.circle = class {
         this.easing = easing;
     }
 
-    update(targetX, targetY) {
+    update(_targetX, _targetY) {
         // Setze die Zielposition auf die Mausposition
-        this.targetX = targetX;
-        this.targetY = targetY;
+        this.targetX = _targetX;
+        this.targetY = _targetY;
     }
 
     display() {
@@ -30,8 +30,9 @@ Interface.circle = class {
     
         ctx.beginPath();
         ctx.arc(this.x, this.y, 33, 0, 2 * Math.PI);
-        ctx.fillStyle = "blue";
+        ctx.fillStyle = "white";
         ctx.fill();
         ctx.closePath();
+
     }
 };
