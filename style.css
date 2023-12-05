@@ -8,3 +8,7 @@ body {
     background-color: #1F1F1F;
 
 }
+
+#playground:hover {
+    cursor: none;
+}

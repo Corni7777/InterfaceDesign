@@ -14,6 +14,17 @@ Interface.circle = class {
         this.targetX = _targetX;
         this.targetY = _targetY;
     }
+    hit(_rectangle) {
+        if (_rectangle == null) {
+            
+        }
+        return (
+            this.x < _rectangle.x + _rectangle.width &&
+            this.x + 33 > _rectangle.x &&
+            this.y < _rectangle.y + _rectangle.height &&
+            this.y + 33 > _rectangle.y
+        );
+    }
 
     display() {
         var canvas = document.getElementById("playground");

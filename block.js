@@ -26,6 +26,8 @@ Interface.Rectangle = class {
         );
     }
 
+
+
     display() {
         var ctx = this.canvas.getContext("2d");
         ctx.fillStyle = "white";
