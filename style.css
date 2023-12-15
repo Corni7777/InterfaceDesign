@@ -3,6 +3,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #1F1F1F;
 }
+
 #playground {
     border-radius: 30px;
     background-color: #1F1F1F;
@@ -11,4 +12,21 @@ body {
 
 #playground:hover {
     cursor: none;
+}
+
+#fullscreen {
+    color: white;
+    background-color: #1F1F1F;
+    width: 180px;
+    height: 50px;
+    border-radius: 10px;
+    border: none;
+    font-size: 20px;
+}
+
+#fullscreen:hover {
+    color: #1F1F1F;
+    background-color: white;
+    border: 2px solid #1F1F1F;
+    cursor: pointer;
 }
