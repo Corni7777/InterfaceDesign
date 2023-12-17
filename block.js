@@ -1,10 +1,14 @@
 var Interface = Interface || {};
 
 Interface.Rectangle = class {
+
+    static Swidth = 50;
+    static Sheigth = 30;
+
     constructor(canvas) {
         this.canvas = canvas;
-        this.width = 50;
-        this.height = 30;
+        this.width = Interface.Rectangle.Swidth;
+        this.height = Interface.Rectangle.Sheigth;
         this.x = Math.random() < 0.5 ? -this.width : this.canvas.width;
         this.y = Math.random() * this.canvas.height;
         this.speed = Math.random() * 7 + 3;

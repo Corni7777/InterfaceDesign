@@ -12,11 +12,12 @@ var Interface;
         document.querySelector("#fullscreen").addEventListener("click", toggleFullScreen)
 
         var playground = document.querySelector("#playground");
-        timer = setInterval(createRectangle, 400);
+        timer = setInterval(createRectangle, 300);
 
         circle = new Interface.circle(window.innerWidth / 2, window.innerHeight / 2, 0.05);
         playground.addEventListener("mousemove", moveCircle);
         animate(); // Starte die Animation
+
     }
 
     function moveCircle(event) {
@@ -104,6 +105,9 @@ var Interface;
                 document.webkitExitFullscreen();
             }
         }
+        console.log(circle.radius)
+        console.log(rectangles[1].width)
+        console.log(rectangles[1].height)
     }
     document.addEventListener("fullscreenchange", handleFullScreenChange);
     document.addEventListener("webkitfullscreenchange", handleFullScreenChange);
@@ -117,11 +121,39 @@ var Interface;
             playground.width = window.innerWidth;
             playground.height = window.innerHeight;
 
+            circle.radius = 33 * (playground.width / (890 + playground.width / 4)); 
+
+            Interface.Rectangle.Swidth = Interface.Rectangle.Swidth *= (playground.width / (890 + playground.width / 4));
+            Interface.Rectangle.Sheigth = Interface.Rectangle.Sheigth *= (playground.height / (500 + playground.height / 4));
+
+            rectangles.forEach(block => {
+                block.width *= (playground.width / (890 + playground.width / 4)); 
+                block.height *= (playground.height / (500 + playground.height / 4)); 
+            });
+            brokenblocks.forEach(block => {
+                block.width *= (playground.width / (890 + playground.width / 4)); 
+                block.height *= (playground.height / (500 + playground.height / 4)); 
+            });
+
             document.addEventListener("mousemove", lockMouse);
         } else {
             // Setze die Größe des Canvas auf die ursprüngliche Größe zurück
             playground.width = 890; // Passe dies an die ursprüngliche Breite an
             playground.height = 560; // Passe dies an die ursprüngliche Höhe an
+
+            circle.radius = 33
+
+            Interface.Rectangle.Swidth = 50
+            Interface.Rectangle.Sheigth = 30
+
+            rectangles.forEach(block => {
+                block.width = 50
+                block.height = 30
+            });
+            brokenblocks.forEach(block => {
+                block.width = 50
+                block.height = 30
+            });
 
             document.removeEventListener("mousemove", lockMouse);
         }
