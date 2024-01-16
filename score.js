@@ -28,7 +28,7 @@ Interface.score = class {
         ctx.fillStyle = "white";
         ctx.font = "20px Arial";
         ctx.textAlign = "right";
-        ctx.fillText(`Score: ${this.score} Combo: ${this.combo}`, canvas.width - 10, 30);
+        ctx.fillText(`Score: ${this.score} Combo: ${this.combo}`, canvas.width - 100, 50);
       }
 
 

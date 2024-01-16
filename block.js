@@ -10,11 +10,12 @@ Interface.Rectangle = class {
         this.width = Interface.Rectangle.Swidth;
         this.height = Interface.Rectangle.Sheigth;
         this.x = Math.random() < 0.5 ? -this.width : this.canvas.width;
-        this.y = Math.random() * this.canvas.height;
+        this.y = Math.random() * (0.7 * this.canvas.height) + 0.15 * this.canvas.height;
         this.speed = Math.random() * 7 + 3;
         this.vx = Math.random() < 0.5 ? this.speed : -this.speed;
         this.vy = Math.random() * 2 - 1;
         this.broken = false;
+        this.initialSpawned = false;
     }
 
     move() {
@@ -30,13 +31,19 @@ Interface.Rectangle = class {
     }
 
     hasCrossedCanvas() {
-        return (
-            this.x > this.canvas.width ||
-            this.x + this.width < 0 ||
-            this.y > this.canvas.height ||
-            this.y + this.height < 0
-        );
-        
+        if (this.x > 0 && this.x < this.canvas.width) {
+            this.initialSpawned = true;
+        }
+        if (this.initialSpawned == true) {
+            return (
+                this.x > this.canvas.width ||
+                this.x + this.width < 0 ||
+                this.y > this.canvas.height ||
+                this.y + this.height < 0
+            );
+        }
+
+
     }
 
     breakBlock() {

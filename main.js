@@ -7,38 +7,38 @@ var Interface;
     var score;
     var healthbar
     var woosh = new Audio('woosh.wav');
-    var music = new Audio('Helios_fadein.mp3');
+    var music;
 
     window.addEventListener("load", hndLoad);
 
     function hndLoad() {
         document.querySelector("#start").addEventListener("click", start);
-        window.addEventListener("keydown", function(event) {
+        window.addEventListener("keydown", function (event) {
             if (event.code === "Space") {
-              start();
+                start();
             }
-          });
+        });
     }
 
 
     function start() {
-        
+
         document.querySelector("#playground").setAttribute("style", "visibility: visible");
-        
+
         var playground = document.querySelector("#playground");
         timer = setInterval(createRectangle, 370);
-        setTimeout(function () { clearInterval(timer); MoreBlocks(230);}, 12500);
-        
+        setTimeout(function () { clearInterval(timer); MoreBlocks(230); }, 12500);
 
+        music = new Audio('Helios_fadein.mp3');
         score = new Interface.score();
         healthbar = new Interface.healthbar(10);
 
         circle = new Interface.circle(window.innerWidth / 2, window.innerHeight / 2, 0.05);
         playground.addEventListener("mousemove", moveCircle);
         animate(); // Starte die Animation
-        // music.play();
+        music.play();
         toggleFullScreen();
-        
+
     }
 
     function moveCircle(event) {
@@ -58,43 +58,80 @@ var Interface;
 
     function animate() {
         requestAnimationFrame(animate);
-        clearCanvas();
-        for (var i = 0; i < rectangles.length; i++) {
+        if (healthbar.isGameOver()) {
+            displayGameOverScreen();
+            fadeOutMusic();
+            gamePaused = true;
+        } else {
+            clearCanvas();
+            for (var i = 0; i < rectangles.length; i++) {
 
-            rectangles[i].move();
-            rectangles[i].display();
+                rectangles[i].move();
+                rectangles[i].display();
 
-            var hitted = circle.hit(rectangles[i])
-            if (hitted == true) {
-                console.log("hit")
-                rectangles[i].breakBlock();
-                brokenblocks.push(rectangles[i])
-                rectangles.splice(i, 1);
-                i--;
-                score.increaseCombo();
-                score.increaseScore();
-                break;
+                var hitted = circle.hit(rectangles[i])
+                if (hitted == true) {
+                    console.log("hit")
+                    rectangles[i].breakBlock();
+                    brokenblocks.push(rectangles[i])
+                    rectangles.splice(i, 1);
+                    i--;
+                    score.increaseCombo();
+                    score.increaseScore();
+                    break;
+                }
+
+                if (rectangles[i].hasCrossedCanvas()) {
+                    rectangles.splice(i, 1);
+                    i--;
+                    healthbar.decreaseLife();
+                    score.resetCombo();
+                    break;
+                }
             }
-
-            if (rectangles[i].hasCrossedCanvas()) {
-                rectangles.splice(i, 1);
-                i--;
-                break;
+            for (var i = 0; i < brokenblocks.length; i++) {
+                brokenblocks[i].move();
+                brokenblocks[i].display();
             }
+            circle.display();
+            score.display();
+            healthbar.display();
         }
-        for (var i = 0; i < brokenblocks.length; i++) {
-            brokenblocks[i].move();
-            brokenblocks[i].display();
-        }
-        circle.display();
-        score.display();
-        healthbar.display();
+
 
     }
 
     function MoreBlocks(_timer) {
         timer = setInterval(createRectangle, _timer);
         console.log("more blocks")
+    }
+    function displayGameOverScreen() {
+        var canvas = document.getElementById("playground");
+        var ctx = canvas.getContext("2d");
+
+        ctx.fillStyle = "#1F1F1F";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "white";
+        ctx.font = "30px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2 - 30);
+        ctx.fillText("Your Score: " + score.score, canvas.width / 2, canvas.height / 2 + 30);
+    }
+
+    function fadeOutMusic() {
+        var volume = 1.0;
+        var fadeInterval = setInterval(function () {
+            volume -= 0.05;
+            volume = Math.max(0, Math.min(1, volume));
+            music.volume = volume;
+
+            if (volume <= 0) {
+                clearInterval(fadeInterval);
+                music.pause();
+                music.currentTime = 0;
+            }
+        }, 100);
     }
 
 
@@ -148,18 +185,18 @@ var Interface;
             playground.width = window.innerWidth;
             playground.height = window.innerHeight;
 
-            circle.radius = 33 * (playground.width / (890 + playground.width / 4)); 
+            circle.radius = 33 * (playground.width / (890 + playground.width / 4));
 
             Interface.Rectangle.Swidth = Interface.Rectangle.Swidth *= (playground.width / (890 + playground.width / 4));
             Interface.Rectangle.Sheigth = Interface.Rectangle.Sheigth *= (playground.height / (500 + playground.height / 4));
 
             rectangles.forEach(block => {
-                block.width *= (playground.width / (890 + playground.width / 4)); 
-                block.height *= (playground.height / (500 + playground.height / 4)); 
+                block.width *= (playground.width / (890 + playground.width / 4));
+                block.height *= (playground.height / (500 + playground.height / 4));
             });
             brokenblocks.forEach(block => {
-                block.width *= (playground.width / (890 + playground.width / 4)); 
-                block.height *= (playground.height / (500 + playground.height / 4)); 
+                block.width *= (playground.width / (890 + playground.width / 4));
+                block.height *= (playground.height / (500 + playground.height / 4));
             });
 
             document.addEventListener("mousemove", lockMouse);
@@ -197,7 +234,8 @@ var Interface;
             var centerY = rect.height / 2;
             window.dispatchEvent(new MouseEvent('mousemove', { clientX: centerX + rect.left, clientY: centerY + rect.top }));
         }
-    }})
+    }
+})
 
 
 
