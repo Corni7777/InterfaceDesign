@@ -36,6 +36,7 @@ Interface.Rectangle = class {
             this.y > this.canvas.height ||
             this.y + this.height < 0
         );
+        
     }
 
     breakBlock() {
@@ -56,14 +57,14 @@ Interface.Rectangle = class {
                 part1.width -= 5;
                 part1.x += -30;
                 part1.y -= -30;
-                ctx.fillStyle = "red";
+                ctx.fillStyle = "white";
                 ctx.fillRect(part1.x, part1.y, part1.width, part1.height);
             }
             if (part2.width > 0) {
                 part2.width -= 5;
                 part2.x += 30;
                 part2.y -= 30;
-                ctx.fillStyle = "red";
+                ctx.fillStyle = "white";
                 ctx.fillRect(part2.x, part2.y, part2.width, part2.height);
             }
         }

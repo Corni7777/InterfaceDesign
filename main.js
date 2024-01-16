@@ -4,20 +4,41 @@ var Interface;
     var rectangles = [];
     var brokenblocks = []
     var timer;
+    var score;
+    var healthbar
     var woosh = new Audio('woosh.wav');
+    var music = new Audio('Helios_fadein.mp3');
 
     window.addEventListener("load", hndLoad);
 
     function hndLoad() {
-        document.querySelector("#fullscreen").addEventListener("click", toggleFullScreen)
+        document.querySelector("#start").addEventListener("click", start);
+        window.addEventListener("keydown", function(event) {
+            if (event.code === "Space") {
+              start();
+            }
+          });
+    }
 
+
+    function start() {
+        
+        document.querySelector("#playground").setAttribute("style", "visibility: visible");
+        
         var playground = document.querySelector("#playground");
-        timer = setInterval(createRectangle, 300);
+        timer = setInterval(createRectangle, 370);
+        setTimeout(function () { clearInterval(timer); MoreBlocks(230);}, 12500);
+        
+
+        score = new Interface.score();
+        healthbar = new Interface.healthbar(10);
 
         circle = new Interface.circle(window.innerWidth / 2, window.innerHeight / 2, 0.05);
         playground.addEventListener("mousemove", moveCircle);
         animate(); // Starte die Animation
-
+        // music.play();
+        toggleFullScreen();
+        
     }
 
     function moveCircle(event) {
@@ -50,6 +71,8 @@ var Interface;
                 brokenblocks.push(rectangles[i])
                 rectangles.splice(i, 1);
                 i--;
+                score.increaseCombo();
+                score.increaseScore();
                 break;
             }
 
@@ -64,7 +87,14 @@ var Interface;
             brokenblocks[i].display();
         }
         circle.display();
+        score.display();
+        healthbar.display();
 
+    }
+
+    function MoreBlocks(_timer) {
+        timer = setInterval(createRectangle, _timer);
+        console.log("more blocks")
     }
 
 
@@ -105,9 +135,6 @@ var Interface;
                 document.webkitExitFullscreen();
             }
         }
-        console.log(circle.radius)
-        console.log(rectangles[1].width)
-        console.log(rectangles[1].height)
     }
     document.addEventListener("fullscreenchange", handleFullScreenChange);
     document.addEventListener("webkitfullscreenchange", handleFullScreenChange);

@@ -44,7 +44,7 @@ Interface.circle = class {
     
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-        ctx.fillStyle = "white";
+        ctx.fillStyle = "#0266E0";
         ctx.fill();
         ctx.closePath();
 
