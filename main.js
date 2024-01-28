@@ -2,16 +2,19 @@ var Interface;
 (function (Interface) {
     var circle;
     var rectangles = [];
-    var brokenblocks = []
+    var brokenblocks = [];
     var timer;
     var score;
     var healthbar
     var woosh = new Audio('woosh.wav');
     var music;
+    var animationId;
+    var backgroundImage = new Image();
 
     window.addEventListener("load", hndLoad);
 
     function hndLoad() {
+
         document.querySelector("#start").addEventListener("click", start);
         window.addEventListener("keydown", function (event) {
             if (event.code === "Space") {
@@ -24,20 +27,28 @@ var Interface;
     function start() {
 
         document.querySelector("#playground").setAttribute("style", "visibility: visible");
+        clearInterval(timer);
 
         var playground = document.querySelector("#playground");
-        timer = setInterval(createRectangle, 370);
+        timer = setInterval(createRectangle, 340);
         setTimeout(function () { clearInterval(timer); MoreBlocks(230); }, 12500);
 
-        music = new Audio('Helios_fadein.mp3');
         score = new Interface.score();
         healthbar = new Interface.healthbar(10);
+        rectangles = [];
+        brokenblocks = [];
 
-        circle = new Interface.circle(window.innerWidth / 2, window.innerHeight / 2, 0.05);
+        if (!music || music.paused) {
+            music = new Audio('Helios_fadein.mp3');
+            music.volume = 0.5;
+            music.play()
+        }
+
+        circle = new Interface.circle(window.innerWidth / 2, window.innerHeight / 2, 0.024);
         playground.addEventListener("mousemove", moveCircle);
+        startAnimation();
         animate(); // Starte die Animation
-        music.play();
-        toggleFullScreen();
+        enterFullscreen();
 
     }
 
@@ -56,11 +67,20 @@ var Interface;
     }
 
 
+    function startAnimation() {
+        animationId = requestAnimationFrame(animate);
+        console.log("Start der Animation")
+    }
+    function stopAnimation() {
+        cancelAnimationFrame(animationId);
+        console.log("STOP")
+    }
     function animate() {
-        requestAnimationFrame(animate);
+        animationId = requestAnimationFrame(animate);
+        displayBackground();
         if (healthbar.isGameOver()) {
             displayGameOverScreen();
-            fadeOutMusic();
+            // fadeOutMusic();
             gamePaused = true;
         } else {
             clearCanvas();
@@ -106,35 +126,18 @@ var Interface;
         console.log("more blocks")
     }
     function displayGameOverScreen() {
-        var canvas = document.getElementById("playground");
-        var ctx = canvas.getContext("2d");
-
-        ctx.fillStyle = "#1F1F1F";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        ctx.fillStyle = "white";
-        ctx.font = "30px Arial";
-        ctx.textAlign = "center";
-        ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2 - 30);
-        ctx.fillText("Your Score: " + score.score, canvas.width / 2, canvas.height / 2 + 30);
+        document.getElementById("gameoverscore").innerHTML = "Game over" + "<br>" + "Your Score: " + score.score;
+        exitFullscreen();
+        music.pause();
+        clearInterval(timer);
+        stopAnimation();
     }
 
-    function fadeOutMusic() {
-        var volume = 1.0;
-        var fadeInterval = setInterval(function () {
-            volume -= 0.05;
-            volume = Math.max(0, Math.min(1, volume));
-            music.volume = volume;
-
-            if (volume <= 0) {
-                clearInterval(fadeInterval);
-                music.pause();
-                music.currentTime = 0;
-            }
-        }, 100);
+    function displayBackground() {
+        backgroundImage.src = "background.jpg";
+        let ctx = playground.getContext("2d");
+        ctx.drawImage(backgroundImage, 0, 0, playground.width, playground.height);
     }
-
-
 
     function clearCanvas() {
         let ctx = playground.getContext("2d");
@@ -149,19 +152,31 @@ var Interface;
 
 
 
-    var isFullScreen = false;
-    function toggleFullScreen() {
-        if (!isFullScreen) {
-            if (playground.requestFullscreen) {
-                playground.requestFullscreen();
-            } else if (playground.msRequestFullscreen) {
-                playground.msRequestFullscreen();
-            } else if (playground.mozRequestFullScreen) {
-                playground.mozRequestFullScreen();
-            } else if (playground.webkitRequestFullscreen) {
-                playground.webkitRequestFullscreen();
-            }
-        } else {
+
+    function enterFullscreen() {
+        var playground = document.querySelector("#playground");
+        if (playground.requestFullscreen) {
+            playground.requestFullscreen();
+        } else if (playground.msRequestFullscreen) {
+            playground.msRequestFullscreen();
+        } else if (playground.mozRequestFullScreen) {
+            playground.mozRequestFullScreen();
+        } else if (playground.webkitRequestFullscreen) {
+            playground.webkitRequestFullscreen();
+        }
+        document.removeEventListener("fullscreenchange", exitFullscreenScaling);
+        document.removeEventListener("webkitfullscreenchange", exitFullscreenScaling);
+        document.removeEventListener("mozfullscreenchange", exitFullscreenScaling);
+        document.removeEventListener("MSFullscreenChange", exitFullscreenScaling);
+
+        document.addEventListener("fullscreenchange", enterFullscreenScaling);
+        document.addEventListener("webkitfullscreenchange", enterFullscreenScaling);
+        document.addEventListener("mozfullscreenchange", enterFullscreenScaling);
+        document.addEventListener("MSFullscreenChange", enterFullscreenScaling);
+    }
+
+    function exitFullscreen() {
+        if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
             if (document.exitFullscreen) {
                 document.exitFullscreen();
             } else if (document.msExitFullscreen) {
@@ -171,56 +186,61 @@ var Interface;
             } else if (document.webkitExitFullscreen) {
                 document.webkitExitFullscreen();
             }
+            document.removeEventListener("fullscreenchange", enterFullscreenScaling);
+            document.removeEventListener("webkitfullscreenchange", enterFullscreenScaling);
+            document.removeEventListener("mozfullscreenchange", enterFullscreenScaling);
+            document.removeEventListener("MSFullscreenChange", enterFullscreenScaling);
+
+            document.addEventListener("fullscreenchange", exitFullscreenScaling);
+            document.addEventListener("webkitfullscreenchange", exitFullscreenScaling);
+            document.addEventListener("mozfullscreenchange", exitFullscreenScaling);
+            document.addEventListener("MSFullscreenChange", exitFullscreenScaling);
         }
     }
-    document.addEventListener("fullscreenchange", handleFullScreenChange);
-    document.addEventListener("webkitfullscreenchange", handleFullScreenChange);
-    document.addEventListener("mozfullscreenchange", handleFullScreenChange);
-    document.addEventListener("MSFullscreenChange", handleFullScreenChange);
-    function handleFullScreenChange() {
-        isFullScreen = !isFullScreen;
 
-        if (isFullScreen) {
-            // Setze die Größe des Canvas auf die Bildschirmgröße
-            playground.width = window.innerWidth;
-            playground.height = window.innerHeight;
 
-            circle.radius = 33 * (playground.width / (890 + playground.width / 4));
+    function enterFullscreenScaling() {
+        // Setze die Größe des Canvas auf die Bildschirmgröße
+        playground.width = window.innerWidth;
+        playground.height = window.innerHeight;
 
-            Interface.Rectangle.Swidth = Interface.Rectangle.Swidth *= (playground.width / (890 + playground.width / 4));
-            Interface.Rectangle.Sheigth = Interface.Rectangle.Sheigth *= (playground.height / (500 + playground.height / 4));
+        circle.radius = 33 * (playground.width / (890 + playground.width / 4));
 
-            rectangles.forEach(block => {
-                block.width *= (playground.width / (890 + playground.width / 4));
-                block.height *= (playground.height / (500 + playground.height / 4));
-            });
-            brokenblocks.forEach(block => {
-                block.width *= (playground.width / (890 + playground.width / 4));
-                block.height *= (playground.height / (500 + playground.height / 4));
-            });
+        Interface.Rectangle.Swidth = Interface.Rectangle.Swidth *= (playground.width / (890 + playground.width / 4));
+        Interface.Rectangle.Sheigth = Interface.Rectangle.Sheigth *= (playground.height / (500 + playground.height / 4));
 
-            document.addEventListener("mousemove", lockMouse);
-        } else {
-            // Setze die Größe des Canvas auf die ursprüngliche Größe zurück
-            playground.width = 890; // Passe dies an die ursprüngliche Breite an
-            playground.height = 560; // Passe dies an die ursprüngliche Höhe an
+        rectangles.forEach(block => {
+            block.width *= (playground.width / (890 + playground.width / 4));
+            block.height *= (playground.height / (500 + playground.height / 4));
+        });
+        brokenblocks.forEach(block => {
+            block.width *= (playground.width / (890 + playground.width / 4));
+            block.height *= (playground.height / (500 + playground.height / 4));
+        });
 
-            circle.radius = 33
+        document.addEventListener("mousemove", lockMouse);
+    }
 
-            Interface.Rectangle.Swidth = 50
-            Interface.Rectangle.Sheigth = 30
+    function exitFullscreenScaling() {
+        // Setze die Größe des Canvas auf die ursprüngliche Größe zurück
+        playground.width = 0; // Passe dies an die ursprüngliche Breite an
+        playground.height = 0; // Passe dies an die ursprüngliche Höhe an
 
-            rectangles.forEach(block => {
-                block.width = 50
-                block.height = 30
-            });
-            brokenblocks.forEach(block => {
-                block.width = 50
-                block.height = 30
-            });
+        circle.radius = 33
 
-            document.removeEventListener("mousemove", lockMouse);
-        }
+        Interface.Rectangle.Swidth = 50
+        Interface.Rectangle.Sheigth = 30
+
+        rectangles.forEach(block => {
+            block.width = 50
+            block.height = 30
+        });
+        brokenblocks.forEach(block => {
+            block.width = 50
+            block.height = 30
+        });
+
+        document.removeEventListener("mousemove", lockMouse);
     }
     function lockMouse(e) {
         var rect = playground.getBoundingClientRect();

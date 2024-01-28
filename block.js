@@ -11,7 +11,9 @@ Interface.Rectangle = class {
         this.height = Interface.Rectangle.Sheigth;
         this.x = Math.random() < 0.5 ? -this.width : this.canvas.width;
         this.y = Math.random() * (0.7 * this.canvas.height) + 0.15 * this.canvas.height;
-        this.speed = Math.random() * 7 + 3;
+        this.maxSpeed = 4.5; // Maximaler Speed
+        this.minSpeed = 3; // Minimaler Speed
+        this.speed = Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
         this.vx = Math.random() < 0.5 ? this.speed : -this.speed;
         this.vy = Math.random() * 2 - 1;
         this.broken = false;
@@ -29,6 +31,7 @@ Interface.Rectangle = class {
             this.y += 5;
         }
     }
+
 
     hasCrossedCanvas() {
         if (this.x > 0 && this.x < this.canvas.width) {
@@ -54,7 +57,7 @@ Interface.Rectangle = class {
     display() {
         var ctx = this.canvas.getContext("2d");
         if (this.broken == false) {
-            ctx.fillStyle = "white";
+            ctx.fillStyle = "#8C1788";
             ctx.fillRect(this.x, this.y, this.width, this.height);
         }
         if (this.broken == true) {
@@ -64,14 +67,14 @@ Interface.Rectangle = class {
                 part1.width -= 5;
                 part1.x += -30;
                 part1.y -= -30;
-                ctx.fillStyle = "white";
+                ctx.fillStyle = "#8C1788";
                 ctx.fillRect(part1.x, part1.y, part1.width, part1.height);
             }
             if (part2.width > 0) {
                 part2.width -= 5;
                 part2.x += 30;
                 part2.y -= 30;
-                ctx.fillStyle = "white";
+                ctx.fillStyle = "#8C1788";
                 ctx.fillRect(part2.x, part2.y, part2.width, part2.height);
             }
         }

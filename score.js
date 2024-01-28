@@ -26,9 +26,9 @@ Interface.score = class {
         var canvas = document.getElementById("playground");
         var ctx = canvas.getContext("2d");
         ctx.fillStyle = "white";
-        ctx.font = "20px Arial";
+        ctx.font = "30px Arcade_N";
         ctx.textAlign = "right";
-        ctx.fillText(`Score: ${this.score} Combo: ${this.combo}`, canvas.width - 100, 50);
+        ctx.fillText(`Score: ${this.score}  Combo: ${this.combo}`, canvas.width - 80, 80);
       }
 
 

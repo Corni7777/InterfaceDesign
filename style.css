@@ -1,13 +1,28 @@
+@font-face {
+    font-family: "Arcade_N"; /* Legen Sie den Namen Ihrer Schriftart fest */
+    src: url('ARCADE_N.TTF') format('truetype') /* Geben Sie den Pfad zur Schriftartendatei und das Format an */
+  }
+
 body {
     text-align: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #1F1F1F;
-    color: white;
+    font-family: "Arcade_N";
+    color: #9C1A90;
+    background-image: url('background.jpg');
+    background-size: cover;
 }
 
+
 #playground {
-    background-color: #1F1F1F;
     visibility: hidden;
+    /* Setzen Sie die Breite und Höhe des Canvas */
+    width: 100%;
+    height: 100%;
+
+    /* Hintergrundbild festlegen */
+    background-image: url('background.jpg');
+
+    /* Hintergrundbild-Größe einstellen */
+    background-size: cover;
 
 }
 
@@ -16,18 +31,24 @@ body {
 }
 
 #start {
-    color: white;
-    background-color: #1F1F1F;
-    width: 280px;
+    font-family: "Arcade_N";
+    color: #9C1A90;
+    background-color: transparent;
+    width: 380px;
     height: 65px;
     border-radius: 10px;
-    border: 1px solid white;
+    border: 3px solid #9C1A90;
     font-size: 20px;
+
 }
 
 #start:hover {
-    color: #1F1F1F;
-    background-color: white;
-    border: 2px solid #1F1F1F;
+    color: #050149;
+    background-color: #9C1A90;
+    border: 2px solid #050149;
     cursor: pointer;
+}
+
+#gameoverscore {
+    font-size: 40px;
 }
