@@ -4,10 +4,10 @@ Interface.healthbar = class {
     constructor(initialLives) {
         this.lives = initialLives;
         this.maxLives = initialLives;
-        this.width = 450;
-        this.height = 20;
+        this.width = 540;
+        this.height = 40;
         this.x =  30;
-        this.y = 30;
+        this.y = 47;
       }
     
       // Verringere die Anzahl der Leben um 1

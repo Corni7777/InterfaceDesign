@@ -6,11 +6,13 @@ var Interface;
     var timer;
     var score;
     var healthbar
-    var woosh = new Audio('woosh.wav');
     var gosound = new Audio('gameover_sound.mp3');
+    var hitsound = new Audio("hit.wav")
+    var losehp = new Audio("losehp.wav")
     var music;
     var animationId;
-    var backgroundImage = new Image();
+    var leaderboard = [];
+
 
     window.addEventListener("load", hndLoad);
 
@@ -22,11 +24,12 @@ var Interface;
                 start();
             }
         });
+        displayLeaderboard();
     }
 
 
     function start() {
-        disableKeyboardInput();
+        
 
         document.querySelector("#playground").setAttribute("style", "visibility: visible");
         clearInterval(timer);
@@ -49,8 +52,9 @@ var Interface;
         circle = new Interface.circle(window.innerWidth / 2, window.innerHeight / 2, 0.024);
         playground.addEventListener("mousemove", moveCircle);
         startAnimation();
-        animate(); // Starte die Animation
+        animate(); 
         enterFullscreen();
+
 
     }
 
@@ -79,34 +83,42 @@ var Interface;
     }
     function animate() {
         animationId = requestAnimationFrame(animate);
-        displayBackground();
         if (healthbar.isGameOver()) {
             displayGameOverScreen();
-            // fadeOutMusic();
             gamePaused = true;
         } else {
             clearCanvas();
             for (var i = 0; i < rectangles.length; i++) {
-
                 rectangles[i].move();
                 rectangles[i].display();
-
-                var hitted = circle.hit(rectangles[i])
+            
+                var hitted = circle.hit(rectangles[i]);
                 if (hitted == true) {
-                    console.log("hit")
+                    if (!hitsound.paused) {
+                        hitsound.pause(); 
+                        hitsound.currentTime = 0; 
+                    }
+                    hitsound.play(); 
+                    console.log("hit");
                     rectangles[i].breakBlock();
-                    brokenblocks.push(rectangles[i])
+                    brokenblocks.push(rectangles[i]);
                     rectangles.splice(i, 1);
                     i--;
                     score.increaseCombo();
                     score.increaseScore();
                     break;
                 }
+            
 
                 if (rectangles[i].hasCrossedCanvas()) {
                     rectangles.splice(i, 1);
                     i--;
                     healthbar.decreaseLife();
+                    if (!losehp.paused) {
+                        losehp.pause(); 
+                        losehp.currentTime = 0; 
+                    }
+                    losehp.play(); 
                     score.resetCombo();
                     break;
                 }
@@ -130,20 +142,45 @@ var Interface;
     function displayGameOverScreen() {
         gosound.volume = 0.5
         gosound.play();
-        document.getElementById("gameoverscore").innerHTML = "Game over" + "<br>" + "Your Score: " + score.score;
-        exitFullscreen();
-        music.pause();
-        clearInterval(timer);
-        stopAnimation();
-        enableKeyboardInput();
-
+        setTimeout(function () {
+            document.getElementById("gameoverscore").innerHTML = "Game over!" + "<br>" + "Your Score: " + score.score;
+            exitFullscreen();
+            music.pause();
+            clearInterval(timer);
+            stopAnimation();
+        }, 350);
     }
 
-    function displayBackground() {
-        backgroundImage.src = "background.jpg";
-        let ctx = playground.getContext("2d");
-        ctx.drawImage(backgroundImage, 0, 0, playground.width, playground.height);
+
+    function saveScore(score) {
+        leaderboard.push(score);
+        leaderboard.sort(function(a, b) {
+            return b - a;
+        });
+        if (leaderboard.length > 5) {
+            leaderboard.pop(); // Entferne den niedrigsten Score, wenn mehr als 5 Einträge vorhanden sind
+        }
     }
+
+    function displayLeaderboard() {
+        var leaderboardElement = document.getElementById("leaderboard");
+        leaderboardElement.innerHTML = "<h2>Highscores</h2>";
+        if (leaderboard.length > 0) {
+            leaderboardElement.innerHTML += "<div class='leaderboard-list' style='font-family: monospace;'>";
+            var maxScoreDigits = Math.floor(Math.log10(Math.max.apply(Math, leaderboard))) + 1;
+            leaderboard.forEach(function(score, index) {
+                var scoreText = score.toString();
+                var padding = "&nbsp;".repeat(Math.max(0, maxScoreDigits - scoreText.length));
+                leaderboardElement.innerHTML += "<div><span>" + (index + 1) + ". "+ "</span><span>" + padding + scoreText + " pts" +  "</span></div>";
+            });
+            leaderboardElement.innerHTML += "</div>";
+            console.log(leaderboard);
+        } else {
+            leaderboardElement.innerHTML += "<br>" +"<p>no highscore entries yet.</p>";
+        }
+    }
+    
+    
 
     function clearCanvas() {
         let ctx = playground.getContext("2d");
@@ -152,18 +189,6 @@ var Interface;
 
 
 
-
-
-    function disableKeyboardInput() {
-        window.addEventListener('keydown', preventDefault);
-    }
-    
-    function preventDefault(event) {
-        event.preventDefault();
-    }
-    function enableKeyboardInput() {
-        window.removeEventListener('keydown', preventDefault);
-    }
 
 
 
@@ -256,6 +281,8 @@ var Interface;
         });
 
         document.removeEventListener("mousemove", lockMouse);
+        saveScore(score.score);
+        displayLeaderboard();
     }
     function lockMouse(e) {
         var rect = playground.getBoundingClientRect();
