@@ -4,6 +4,7 @@ Interface.Rectangle = class {
 
     static Swidth = 50;
     static Sheigth = 30;
+    static textureImage = new Image();
 
     constructor(canvas) {
         this.canvas = canvas;
@@ -53,31 +54,44 @@ Interface.Rectangle = class {
         this.broken = true;
     }
 
-
     display() {
         var ctx = this.canvas.getContext("2d");
+    
+        // Setze die Farbe für die Umrandung
+        ctx.strokeStyle = "#9C1A90";
+    
         if (this.broken == false) {
-            ctx.fillStyle = "#8C1788";
-            ctx.fillRect(this.x, this.y, this.width, this.height);
+            // Zeichne die Textur auf den Block
+            ctx.drawImage(Interface.Rectangle.textureImage, this.x, this.y, this.width, this.height);
+            // Zeichne die Umrandung
+            ctx.strokeRect(this.x, this.y, this.width, this.height);
         }
+    
         if (this.broken == true) {
             var part1 = { x: this.x, y: this.y, width: this.width / 2, height: this.height };
             var part2 = { x: this.x + this.width / 2, y: this.y, width: this.width / 2, height: this.height };
+    
             if (part1.width > 0) {
                 part1.width -= 5;
                 part1.x += -30;
                 part1.y -= -30;
-                ctx.fillStyle = "#8C1788";
-                ctx.fillRect(part1.x, part1.y, part1.width, part1.height);
+                // Zeichne die Textur auf den ersten Teil des gebrochenen Blocks
+                ctx.drawImage(Interface.Rectangle.textureImage, part1.x, part1.y, part1.width, part1.height);
+                // Zeichne die Umrandung
+                ctx.strokeRect(part1.x, part1.y, part1.width, part1.height);
             }
+    
             if (part2.width > 0) {
                 part2.width -= 5;
                 part2.x += 30;
                 part2.y -= 30;
-                ctx.fillStyle = "#8C1788";
-                ctx.fillRect(part2.x, part2.y, part2.width, part2.height);
+                // Zeichne die Textur auf den zweiten Teil des gebrochenen Blocks
+                ctx.drawImage(Interface.Rectangle.textureImage, part2.x, part2.y, part2.width, part2.height);
+                // Zeichne die Umrandung
+                ctx.strokeRect(part2.x, part2.y, part2.width, part2.height);
             }
         }
-
     }
 };
+
+Interface.Rectangle.textureImage.src = "texture.jpg"; // Aufruf außerhalb der Klasse, um das Bild zu laden

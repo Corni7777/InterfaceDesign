@@ -7,6 +7,7 @@ var Interface;
     var score;
     var healthbar
     var woosh = new Audio('woosh.wav');
+    var gosound = new Audio('gameover_sound.mp3');
     var music;
     var animationId;
     var backgroundImage = new Image();
@@ -25,6 +26,7 @@ var Interface;
 
 
     function start() {
+        disableKeyboardInput();
 
         document.querySelector("#playground").setAttribute("style", "visibility: visible");
         clearInterval(timer);
@@ -126,11 +128,15 @@ var Interface;
         console.log("more blocks")
     }
     function displayGameOverScreen() {
+        gosound.volume = 0.5
+        gosound.play();
         document.getElementById("gameoverscore").innerHTML = "Game over" + "<br>" + "Your Score: " + score.score;
         exitFullscreen();
         music.pause();
         clearInterval(timer);
         stopAnimation();
+        enableKeyboardInput();
+
     }
 
     function displayBackground() {
@@ -148,7 +154,16 @@ var Interface;
 
 
 
-
+    function disableKeyboardInput() {
+        window.addEventListener('keydown', preventDefault);
+    }
+    
+    function preventDefault(event) {
+        event.preventDefault();
+    }
+    function enableKeyboardInput() {
+        window.removeEventListener('keydown', preventDefault);
+    }
 
 
 

@@ -50,7 +50,7 @@ function exitFullscreen() {
     document.addEventListener("mozfullscreenchange", exitFullscreenScaling);
     document.addEventListener("MSFullscreenChange", exitFullscreenScaling);
 }
-}
+
 
 function enterFullscreenScaling() {
     // Setze die Größe des Canvas auf die Bildschirmgröße
