@@ -22,7 +22,12 @@ Interface.healthbar = class {
       display() {
         var canvas = document.getElementById("playground");
         var ctx = canvas.getContext("2d");
-        ctx.fillStyle = "#0266E0";
+        if (this.lives > 2) {
+          ctx.fillStyle = "#0266E0";
+        }
+        else {
+          ctx.fillStyle = "red";
+        }
         ctx.fillRect(this.x, this.y, (this.width * this.lives) / this.maxLives, this.height);
     
         ctx.strokeStyle = "white";
