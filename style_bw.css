@@ -13,6 +13,7 @@ body {
 }
 h1 {
     font-size: 80px;
+    margin-bottom: 30px;
 }
 
 #playground {
@@ -57,4 +58,8 @@ h1 {
 }
 #leaderboard {
     font-size: 22px;
+}
+a {
+    color: white;
+    font-size: 10px;
 }

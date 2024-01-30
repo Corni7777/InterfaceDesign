@@ -29,7 +29,7 @@ var Interface;
 
 
     function start() {
-        
+
 
         document.querySelector("#playground").setAttribute("style", "visibility: visible");
         clearInterval(timer);
@@ -52,9 +52,8 @@ var Interface;
         circle = new Interface.circle(window.innerWidth / 2, window.innerHeight / 2, 0.024);
         playground.addEventListener("mousemove", moveCircle);
         startAnimation();
-        animate(); 
+        animate();
         enterFullscreen();
-
 
     }
 
@@ -91,14 +90,14 @@ var Interface;
             for (var i = 0; i < rectangles.length; i++) {
                 rectangles[i].move();
                 rectangles[i].display();
-            
+
                 var hitted = circle.hit(rectangles[i]);
                 if (hitted == true) {
                     if (!hitsound.paused) {
-                        hitsound.pause(); 
-                        hitsound.currentTime = 0; 
+                        hitsound.pause();
+                        hitsound.currentTime = 0;
                     }
-                    hitsound.play(); 
+                    hitsound.play();
                     console.log("hit");
                     rectangles[i].breakBlock();
                     brokenblocks.push(rectangles[i]);
@@ -108,17 +107,17 @@ var Interface;
                     score.increaseScore();
                     break;
                 }
-            
+
 
                 if (rectangles[i].hasCrossedCanvas()) {
                     rectangles.splice(i, 1);
                     i--;
                     healthbar.decreaseLife();
                     if (!losehp.paused) {
-                        losehp.pause(); 
-                        losehp.currentTime = 0; 
+                        losehp.pause();
+                        losehp.currentTime = 0;
                     }
-                    losehp.play(); 
+                    losehp.play();
                     score.resetCombo();
                     break;
                 }
@@ -154,7 +153,7 @@ var Interface;
 
     function saveScore(score) {
         leaderboard.push(score);
-        leaderboard.sort(function(a, b) {
+        leaderboard.sort(function (a, b) {
             return b - a;
         });
         if (leaderboard.length > 5) {
@@ -168,19 +167,19 @@ var Interface;
         if (leaderboard.length > 0) {
             leaderboardElement.innerHTML += "<div class='leaderboard-list' style='font-family: monospace;'>";
             var maxScoreDigits = Math.floor(Math.log10(Math.max.apply(Math, leaderboard))) + 1;
-            leaderboard.forEach(function(score, index) {
+            leaderboard.forEach(function (score, index) {
                 var scoreText = score.toString();
                 var padding = "&nbsp;".repeat(Math.max(0, maxScoreDigits - scoreText.length));
-                leaderboardElement.innerHTML += "<div><span>" + (index + 1) + ". "+ "</span><span>" + padding + scoreText + " pts" +  "</span></div>";
+                leaderboardElement.innerHTML += "<div><span>" + (index + 1) + ". " + "</span><span>" + padding + scoreText + " pts" + "</span></div>";
             });
             leaderboardElement.innerHTML += "</div>";
             console.log(leaderboard);
         } else {
-            leaderboardElement.innerHTML += "<br>" +"<p>no highscore entries yet.</p>";
+            leaderboardElement.innerHTML += "<br>" + "<p>no highscore entries yet.</p>";
         }
     }
-    
-    
+
+
 
     function clearCanvas() {
         let ctx = playground.getContext("2d");
@@ -259,6 +258,8 @@ var Interface;
         });
 
         document.addEventListener("mousemove", lockMouse);
+        console.log("width: " + playground.width)
+        console.log("heigth: " + playground.height)
     }
 
     function exitFullscreenScaling() {
